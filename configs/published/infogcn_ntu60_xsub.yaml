@@ -1,0 +1,40 @@
+# InfoGCN published recipe — NTU-60 X-Sub
+# Source: ~/external/infogcn/README.md training command
+# (cross-checked against main.py argparse defaults)
+
+dataset: ntu
+datacase: NTU60_CS
+num_class: 60
+num_point: 25
+num_person: 2
+graph: graph.ntu_rgb_d.Graph
+feeder: feeders.feeder_ntu.Feeder
+
+# optimizer (from main.py argparse defaults — README doesn't override)
+optimizer: SGD
+nesterov: true
+momentum: 0.9
+base_lr: 0.1            # from main.py default
+weight_decay: 5e-4
+
+# schedule
+num_epoch: 110
+step: [90, 100]         # README explicitly passes --step 90 100
+warm_up_epoch: 5        # from main.py default
+
+# batch
+batch_size: 128
+test_batch_size: 128
+
+# InfoGCN-specific
+lambda_1: 1.0e-4
+lambda_2: 1.0e-1
+z_prior_gain: 3
+n_heads: 3
+k: 1
+use_vel: false
+half: true              # mixed-precision (fp16)
+
+num_worker: 4
+
+lr_scheduler: step     step: [90, 100]
