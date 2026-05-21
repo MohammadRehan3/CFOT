@@ -1,0 +1,1 @@
+﻿dataset,backbone,modality,placement,seed,val_acc_top1,val_acc_top5,train_time_min,params_M,gflops,config_hash,ckpt_path,notes
