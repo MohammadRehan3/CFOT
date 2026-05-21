@@ -1,0 +1,14 @@
+@"
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.vscode/
+.idea/
+*.pth
+*.pt
+*.ckpt
+logs/**/events.*
+.env
+.DS_Store
+Thumbs.db
+"@
