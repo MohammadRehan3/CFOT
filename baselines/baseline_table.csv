@@ -1,2 +1,2 @@
-﻿dataset,backbone,modality,placement,seed,val_acc_top1,val_acc_top5,train_time_min,params_M,gflops,config_hash,ckpt_path,notes
-ntu60_xsub,ctrgcn,joint,published,1,0.8955,0.9813,13:42:24,1.447,<gflops>,<git_sha>,"E:\Mohammad Code\CTR-GCN-main\CTR-GCN-main\work_dir\ntu\csub\ctrgcn\runs-64-40064_right.txt" best@ep64, 0.25pp below paper 89.80,
+﻿dataset,backbone,modality,recipe,placement,seed,val_acc_top1,val_acc_top5,macro_recall,train_time_min,params_M,gflops,config_hash,ckpt_path,notes
+ntu60_xsub,ctrgcn,joint,,published,1,0.8955,0.9813, ,13:42:24,1.46,1.97,,"E:\Mohammad Code\CFOT\logs\week1\ctrgcn_ntu60_xsub_joint_s1\runs-64-40064.pt", best@ep64 0.25pp below paper 89.80,
