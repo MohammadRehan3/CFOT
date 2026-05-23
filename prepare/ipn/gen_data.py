@@ -371,34 +371,36 @@ def interpolate_landmarks(landmarks, L):
 
     return interpolated_landmarks
 
-def load_landmarks(txt_file: Path, connectivity: dict) -> np.ndarray:
-    """Parse one .txt file into a (T, 21, 4) float32 array.
-
-    Safely skips corrupted files or sequences with fewer than 2 valid frames.
-    """
+def load_landmarks(txt_file: Path, connectivity: dict, debug=False) -> np.ndarray:
     try:
-        # Open with utf-8, but use errors="ignore" or catch the block entirely
         with open(txt_file, "r", encoding="utf-8") as f:
             data = f.read()
     except UnicodeDecodeError:
-        print(f"WARNING: File corruption detected in {txt_file}. Skipping file.")
         return None
 
-    # Frames separated by blank lines
+    data = data.replace("\r\n", "\n").replace("\r", "\n")
     frames = data.split("\n\n")
-    frames = frames[:-1] if frames and frames[-1] == "" else frames
+    frames = [f for f in frames if f.strip()]
+
+    if debug:
+        print(f"  LOAD DEBUG: {txt_file.name}")
+        print(f"    file size: {len(data)} chars")
+        print(f"    n raw frames after split: {len(frames)}")
+        if frames:
+            first_frame_lines = frames[0].split("\n")
+            print(f"    first frame: {len(first_frame_lines)} lines")
+            print(f"    first line of first frame: {repr(first_frame_lines[0][:80])}")
 
     sequence = []
     for frame in frames:
         lines = frame.split("\n")
         landmarks = []
-        joint_idx = 0 
+        joint_idx = 0
         
         for line in lines:
             line = line.strip()
             if not line:
                 continue
-                
             if len(line) == 1:
                 coords = [-1.0, -1.0, -1.0, -1.0]
                 landmarks.append(coords)
@@ -406,25 +408,21 @@ def load_landmarks(txt_file: Path, connectivity: dict) -> np.ndarray:
             else:
                 parts = line.split(";")
                 parts = [p for p in parts if len(p) > 0]
-                
                 if joint_idx < 21:
                     try:
                         coords = [float(x) for x in parts] + [connectivity[joint_idx] / 3.0]
                         landmarks.append(coords)
                     except ValueError:
-                        # Catch lines that contain corrupted non-numeric text garbage
                         coords = [-1.0, -1.0, -1.0, -1.0]
                         landmarks.append(coords)
                     joint_idx += 1
 
-        if len(frame) == 1:
-            landmarks = np.array([[-1.0, -1.0, -1.0, -1.0]], dtype=np.float32)
-            landmarks = np.repeat(landmarks, 21, axis=0)
-        else:
-            landmarks = np.array(landmarks, dtype=np.float32)
+        landmarks_arr = np.array(landmarks, dtype=np.float32)
+        if landmarks_arr.shape[0] == 21:
+            sequence.append(landmarks_arr)
 
-        if landmarks.shape[0] == 21:
-            sequence.append(landmarks)
+    if debug:
+        print(f"    valid frames assembled: {len(sequence)}")
 
     if len(sequence) < 2:
         return None
@@ -458,12 +456,25 @@ def process_split(annotations_file: Path, data_dir: Path,
     with open(annotations_file, "r") as f:
         lines = [ln.strip() for ln in f.readlines() if ln.strip()]
 
-    for line in lines:
+    for i, line in enumerate(lines):
         parts = line.split(",")
         folder = str(parts[0])
-        label = int(parts[2]) - 1   # 1..14 → 0..13
+        try:
+            label = int(parts[2]) - 1
+        except ValueError:
+            skipped_missing += 1
+            continue
         fname = f"{parts[1]}_{parts[2]}_{parts[3]}_{parts[4]}_{parts[5]}.txt"
         src_path = data_dir / folder / fname
+
+        # DEBUG: print first 3 paths and whether they exist
+        if i < 3:
+            print(f"  DEBUG line {i}: parts={parts}")
+            print(f"    folder={repr(folder)}")
+            print(f"    fname={repr(fname)}")
+            print(f"    src_path={src_path}")
+            print(f"    src_path.exists()={src_path.exists()}")
+            print(f"    parts[5] repr: {repr(parts[5])}")  # check for hidden chars
 
         if not src_path.exists():
             skipped_missing += 1
@@ -508,19 +519,19 @@ def main():
     args.out_path.parent.mkdir(parents=True, exist_ok=True)
     connectivity = build_connectivity_dict()
 
+    split_to_annot = {
+        "train": "Annot_TrainList_splitted.txt",
+        "val":   "Annot_ValidList_splitted.txt",
+        "test":  "Annot_TestList.txt",
+    }
+
     arrays = {}
     summary = {}
-    for split in ["Annot_TrainList_splitted", "Annot_ValidList_splitted", "Annot_TestList"]:
-        annot = args.annot_dir / f"{split}.txt"
+    for split, annot_name in split_to_annot.items():
+        annot = args.annot_dir / annot_name
         if not annot.exists():
-            for alt in [f"{split}.csv", f"annot_{split}.txt", f"{split}_list.txt"]:
-                alt_p = args.annot_dir / alt
-                if alt_p.exists():
-                    annot = alt_p
-                    break
-            else:
-                print(f"WARNING: no annotation file for '{split}'. Skipping.")
-                continue
+            print(f"WARNING: no annotation file at {annot}. Skipping split '{split}'.")
+            continue
 
         print(f"Processing {split} from {annot}")
         x, y = process_split(annot, args.data_dir, args.max_seq_len, connectivity)
@@ -530,7 +541,6 @@ def main():
         arrays[f"x_{split}"] = x
         arrays[f"y_{split}"] = y
         summary[split] = (x.shape, len(np.unique(y)))
-
     print(f"\nSaving to {args.out_path} ...")
     np.savez_compressed(args.out_path, **arrays)
     size_mb = args.out_path.stat().st_size / 1e6
