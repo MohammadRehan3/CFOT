@@ -78,18 +78,33 @@ class PlacementModel(BaseModel):
 
     # ---- helper: run one block with optional parallel/replace slot ----
     def _run_block(self, i, block, x):
+        # NOTE on stride: CTR-GCN blocks l5 (idx 4) and l8 (idx 7) use stride=2,
+        # so tcn1 HALVES T while gcn1 preserves it. The slot returns the same T
+        # it receives. To keep shapes aligned with the (strided) tcn output, the
+        # slot operates on `tcn` (already at the correct output T), not on `g`.
         if self.placement in ('parallel_to_tcn', 'deep_only') and str(i) in self.slots:
             g = block.gcn1(x)
-            tcn = block.tcn1(g)
+            tcn = block.tcn1(g)                       # may be stride-2 -> T/2
             res = block.residual(x)
-            slot = self.slots[str(i)](g)              # residual, same shape as g/tcn
+            slot = self.slots[str(i)](tcn)            # operate on tcn -> T matches
             gate = self.gates[str(i)]
             return block.relu(tcn + gate * slot + res)
         elif self.placement == 'replace_tcn_all':
+            # Replace tcn with a stride-aware path. CFOT alone cannot downsample,
+            # so for strided blocks we still need tcn1 for the stride; replacing
+            # it is only well-defined for stride-1 blocks. We run gcn1 then slot,
+            # and for stride!=1 blocks fall back to tcn1 to handle downsampling.
             g = block.gcn1(x)
             res = block.residual(x)
-            slot = self.slots[str(i)](g)
-            return block.relu(slot + res)             # tcn dropped (caveat above)
+            # detect stride via residual type is unreliable; use tcn1 output T:
+            tcn = block.tcn1(g)
+            if tcn.size(2) != g.size(2):
+                # strided block: CFOT can't downsample -> keep tcn, add slot on it
+                slot = self.slots[str(i)](tcn)
+                return block.relu(tcn + slot + res)
+            else:
+                slot = self.slots[str(i)](g)
+                return block.relu(slot + res)         # true tcn replacement
         else:
             return block(x)                            # untouched baseline block
 
