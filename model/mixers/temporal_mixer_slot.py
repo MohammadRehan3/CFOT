@@ -22,7 +22,7 @@ gate=0 reduce to baseline cleanly.
 import torch
 import torch.nn as nn
 
-from cfot import MultiDeltaCFOT, AdaptiveDeltaCFOTv2, SignedMultiDeltaCFOT
+from model.cfot import MultiDeltaCFOT, AdaptiveDeltaCFOTv2, SignedMultiDeltaCFOT
 
 
 class TemporalMixerSlot(nn.Module):
