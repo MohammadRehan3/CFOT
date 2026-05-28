@@ -1,0 +1,16 @@
+model: model.ctrgcn_placement.PlacementModel
+model_args:
+  num_class: 60
+  num_point: 25
+  num_person: 2
+  graph: graph.ntu_rgb_d.Graph
+  graph_args:
+    labeling_mode: spatial
+  placement: before_backbone
+  mixer: cfot_multi            # <- set to whatever your 95.32% run used
+  mixer_kwargs:
+    deltas: [1, 2, 4]          # <- match your old run EXACTLY
+    emb_channels: 64
+    sinkhorn_tau: 0.5
+seed: 1                        # match your existing 89.55% baseline seed
+# ... your standard NTU-60 train args (epochs, lr, batch, etc.)
