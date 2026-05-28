@@ -2,3 +2,44 @@
 ntu60_xsub,ctrgcn,joint,,published,1,0.8955,0.9813, ,13:42:24,1.46,1.97,,"E:\Mohammad Code\CFOT\logs\week1\ctrgcn_ntu60_xsub_joint_s1\runs-64-40064.pt", best@ep64 0.25pp below paper 89.80,ipn_2020,lstm,joint,ipn_hands_paper_3layer_unidir_256_drop03,N/A,0,0.4398,1.0000,0.2509,7.03,1.38,0.00,ipn2020_lstm_sanity_v1,"N/A — sanity only, not saved","IPN-Hand 2020 (14 cls incl. D0X), 3D xyz, keyframe sampling; target 91.2/78.0 from IPN-HandS may not apply to this setup; best_val=0.4592, gate_pass=False"
 ipn_2020,lstm,joint,ipn_hands_paper_3layer_unidir_256_drop03,N/A,0,0.4398,1.0000,0.2509,6.81,1.38,0.00,ipn2020_lstm_sanity_v1,"N/A — sanity only, not saved","IPN-Hand 2020 (14 cls incl. D0X), 3D xyz, keyframe sampling; target 91.2/78.0 from IPN-HandS may not apply to this setup; best_val=0.4592, gate_pass=False"
 ipn_2020,lstm,joint,ipn_hands_paper_3layer_unidir_256_drop03,N/A,0,0.5641,1.0000,0.5000,5.31,1.41,0.00,ipn2020_lstm_sanity_v1,"N/A — sanity only, not saved","IPN-Hand 2020 (14 cls incl. D0X), 3D xyz, keyframe sampling; target 91.2/78.0 from IPN-HandS may not apply to this setup; best_val=0.6126, gate_pass=False"
+ntu60_xsub,stgcn,joint,published,baseline,unknown,0.8141,0.9687,<macro_recall>,22:34:29,3.1,4.2,<hash>,./work_dir/recognition/ntu-xsub/ST_GCN/epoch60_model.pt,"5050; lr 0.1→0.025 batch 64→16; seed not set (forgot); paper 81.5, gate [81.0,82.0] PASS"
+ntu60_xsub,infogcn,joint,published,baseline,unknown,0.9046,0.9809,<macro_recall>,08:47:04,nan,nan,<hash>, ,"A5000; paper 93.0% (6-stream)"
+
+
+# IPN ST-GCN rows (5 seeds, best val_acc selection)
+ipn_2020,stgcn,joint,published,baseline,0,82.30%,97.98%,<macro_recall>,00:13:04,3.10,<gflops>,<hash>,<ckpt>,"5050; NTU recipe applied"
+ipn_2020,stgcn,joint,published,baseline,1,84.71%,99.22%,,00:13:04,,,,,"5050; NTU recipe applied"
+ipn_2020,stgcn,joint,published,baseline,7,79.96%,96.68%,,00:13:04,,,,,"5050; NTU recipe applied"
+ipn_2020,stgcn,joint,published,baseline,42,85.69%,99.15%,,00:13:04,,,,,"5050; NTU recipe applied"
+ipn_2020,stgcn,joint,published,baseline,123,86.21%, 97.59%,,00:13:04,,,,,"5050; NTU recipe applied"
+
+# IPN CTR-GCN rows (5 seeds, best val_acc selection)
+ipn_2020,ctrgcn,joint,published,baseline,0,0.9427,0.9961,<macro_recall>,00:26:29,1.46,<gflops>,<hash>,<ckpt>,"5050; NTU recipe applied; best_val_acc selection"
+ipn_2020,ctrgcn,joint,published,baseline,1,0.9343,0.9941,,00:26:29,,,,,"5050; NTU recipe applied; best_val_acc selection"
+ipn_2020,ctrgcn,joint,published,baseline,7,0.9395,0.9948,,00:26:29,,,,,"5050; NTU recipe applied; best_val_acc selection"
+ipn_2020,ctrgcn,joint,published,baseline,42,0.9388,0.9922,,00:26:29,,,,,"5050; NTU recipe applied; best_val_acc selection"
+ipn_2020,ctrgcn,joint,published,baseline,123,0.9388,0.9961,,00:26:29,,,,,"5050; NTU recipe applied; best_val_acc selection"
+
+# IPN MS-G3D  rows (3 seeds, best val_acc selection)
+ipn_2020,msg3d,joint,published,baseline,0,0.9466,0.9961,<macro_recall>,00:19:44, ,<gflops>,<hash>,<ckpt>,"5050; NTU recipe applied; best_val_acc selection"
+ipn_2020,msg3d,bone,published,baseline,0,0.9499,0.9967,<macro_recall>,00:20:03, ,<gflops>,<hash>,<ckpt>,"5050; NTU recipe applied; best_val_acc selection"
+ipn_2020,msg3d,joint+bone(ensemble),published,baseline,0,0.9570,0.9973,<macro_recall>,00:00:00, ,<gflops>,<hash>,<ckpt>,"5050; NTU recipe applied; best_val_acc selection"
+ipn_2020,msg3d,joint,published,baseline,1,0.9408,0.9967,<macro_recall>,00:19:44, ,<gflops>,<hash>,<ckpt>,"5050; NTU recipe applied; best_val_acc selection"
+ipn_2020,msg3d,bone,published,baseline,1,0.9447,0.9967,<macro_recall>,00:20:03, ,<gflops>,<hash>,<ckpt>,"5050; NTU recipe applied; best_val_acc selection"
+ipn_2020,msg3d,joint+bone(ensemble),published,baseline,1,0.9479,0.9967,<macro_recall>,00:00:00, ,<gflops>,<hash>,<ckpt>,"5050; NTU recipe applied; best_val_acc selection"
+ipn_2020,msg3d,joint,published,baseline,42,0.9278,0.9941,<macro_recall>,00:19:44, ,<gflops>,<hash>,<ckpt>,"5050; NTU recipe applied; best_val_acc selection"
+ipn_2020,msg3d,bone,published,baseline,42,0.9538,0.9974,<macro_recall>,00:20:03, ,<gflops>,<hash>,<ckpt>,"5050; NTU recipe applied; best_val_acc selection"
+ipn_2020,msg3d,joint+bone(ensemble),published,baseline,42,0.9499,0.9967,<macro_recall>,00:00:00, ,<gflops>,<hash>,<ckpt>,"5050; NTU recipe applied; best_val_acc selection"
+
+
+# SHREC'17 CTR-GCN rows (3 seeds, best val_acc selection)
+SHREC'17,ctrgcn,joint,published,baseline,0,0.8583,0.9833,<macro_recall>,00:34:14, ,<gflops>,<hash>,<ckpt>,"5050; NTU recipe applied; best_val_acc selection"
+SHREC'17,ctrgcn,joint,published,baseline,0,0.8417,0.9833,<macro_recall>,00:34:14, ,<gflops>,<hash>,<ckpt>,"5050; NTU recipe applied; best_val_acc selection"
+SHREC'17,ctrgcn,joint,published,baseline,0,0.8393,0.9857,<macro_recall>,00:34:14, ,<gflops>,<hash>,<ckpt>,"5050; NTU recipe applied; best_val_acc selection"
+
+
+
+
+
+# IPN MS-G3D row (running)
+ipn_2020,msg3d,joint,published-1gpu,baseline,0,RUNNING,,,,,,,,"5050; in progress"
