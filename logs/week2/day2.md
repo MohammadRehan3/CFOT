@@ -54,3 +54,33 @@ SHREC 3-seed result (96.51% ± 0.30)
   cleared. FAIL -> debug mixer config (must match the 95.32% CFOT setup).
 - Build/verify graph/ipn_hand.py; launch IPN-13 ST-GCN seed 0 on 5050.
 - (If gate passes) begin placement pilot prep on A5000.
+
+for seed= 42, IPN 13 with stgcn (13 classes ) I got:
+
+    mean_loss: 0.35563479013302746
+    Top1: 88.45%
+    Top5: 99.03%
+
+for seed= 0, IPN 13 with stgcn (13 classes ), I have changed step to be [50, 70] instead of [10,50], I got:
+
+[05.29.26|23:48:18]     mean_loss: 0.2430134141297244
+[05.29.26|23:48:18]     Top1: 92.82%
+[05.29.26|23:48:18]     Top5: 99.51%
+
+for seed= 1, IPN 13 with stgcn (13 classes ), I have changed step to be [50, 70] instead of [10,50], I got:
+
+[05.30.26|00:05:03]     mean_loss: 0.27351153305019527
+[05.30.26|00:05:03]     Top1: 91.65%
+[05.30.26|00:05:03]     Top5: 99.61%
+
+for seed= 2, IPN 13 with stgcn (13 classes ), I have changed step to be [50, 70] instead of [10,50], I got:
+
+[05.30.26|00:15:47]     mean_loss: 0.21975565752398005
+[05.30.26|00:15:47]     Top1: 91.75%
+[05.30.26|00:15:47]     Top5: 99.51%
+
+for seed= 42, IPN 13 with stgcn (13 classes ), I have changed step to be [50, 70] instead of [10,50], I got:
+
+[05.30.26|00:26:56]     mean_loss: 0.28498175122556
+[05.30.26|00:26:56]     Top1: 91.55%
+[05.30.26|00:26:56]     Top5: 99.22%
